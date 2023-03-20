@@ -67,3 +67,40 @@ pub async fn register_user(Form(value): Form<CreateUser>) -> Json<UserInfo> {
     };
     Json(user_info)
 }
+
+#[derive(Debug)]
+pub enum Version {
+    V1,
+    V2,
+    V3,
+}
+
+use axum::extract::FromRequestParts;
+use axum::http::request::Parts;
+use axum::RequestPartsExt;
+
+#[axum::async_trait]
+impl<S> FromRequestParts<S> for Version
+where
+    S: Send + Sync,
+{
+    type Rejection = axum::response::Response;
+
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
+        use std::collections::HashMap;
+
+        let params: Path<HashMap<String, String>> =
+            parts.extract().await.map_err(IntoResponse::into_response)?;
+
+        let version = params
+            .get("version")
+            .ok_or_else(|| (StatusCode::NOT_FOUND, "version param missing").into_response())?;
+
+        match version.as_str() {
+            "v1" => Ok(Version::V1),
+            "v2" => Ok(Version::V2),
+            "v3" => Ok(Version::V3),
+            _ => Err((StatusCode::NOT_FOUND, "unknown version").into_response()),
+        }
+    }
+}
