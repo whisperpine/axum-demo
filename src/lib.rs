@@ -5,6 +5,9 @@ pub mod form;
 /// Convert [`tower::Service`] inner error [`IntoResponse`]
 pub mod service;
 
+#[cfg(test)]
+mod tests;
+
 use error::AppError;
 pub use form::{log_form, show_form};
 

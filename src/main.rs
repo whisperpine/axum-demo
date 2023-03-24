@@ -14,8 +14,10 @@ use tracing_subscriber::util::SubscriberInitExt;
 async fn main() -> anyhow::Result<()> {
     init_tracing_subscriber();
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    info!("listening at http://{}", addr);
+    // let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    // info!("listening at http://{}", addr);
+    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
+    info!("listening at http://localhost:{}", addr.port());
 
     axum::Server::bind(&addr)
         .serve(app().into_make_service())
