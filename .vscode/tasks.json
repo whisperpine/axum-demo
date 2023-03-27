@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "echo nice",
+            "type": "shell",
+            "command": "echo nice",
+            "problemMatcher": []
+        }
+    ]
+}
