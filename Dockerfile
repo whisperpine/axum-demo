@@ -13,7 +13,7 @@
 # FROM ubuntu
 # COPY --from=builder /project/target/release/axum_demo /app/
 # EXPOSE 3000
-# ENTRYPOINT [ "/app/axum_demo" ]
+# CMD [ "/app/axum_demo" ]
 
 
 # ----------------------------------------
@@ -44,4 +44,4 @@ COPY --from=builder /project/target/release/axum_demo /app/
 # 开放容器端口
 EXPOSE 3000
 # 运行应用程序
-ENTRYPOINT [ "/app/axum_demo" ]
+CMD [ "/app/axum_demo" ]
