@@ -1,0 +1,12 @@
+# use this file for dev
+
+services:
+  axum_demo:
+    image: rust
+    volumes:
+      - .:/project
+      - /project/target
+    ports:
+      - 3000:3000
+    working_dir: /project
+    command: cargo run

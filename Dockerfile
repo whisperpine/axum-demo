@@ -1,22 +1,4 @@
 # ----------------------------------------
-# build from rust, run from ubuntu
-# ----------------------------------------
-
-# FROM rust AS builder
-# WORKDIR /project/
-# COPY .cargo/config.toml ./.cargo/
-# COPY Cargo.toml .
-# RUN cargo fetch
-# COPY . .
-# RUN cargo build --offline --release
-
-# FROM ubuntu
-# COPY --from=builder /project/target/release/axum_demo /app/
-# EXPOSE 3000
-# CMD [ "/app/axum_demo" ]
-
-
-# ----------------------------------------
 # build from rust:alpine, run from scratch
 # ----------------------------------------
 
@@ -45,3 +27,21 @@ COPY --from=builder /project/target/release/axum_demo /app/
 EXPOSE 3000
 # 运行应用程序
 CMD [ "/app/axum_demo" ]
+
+
+# ----------------------------------------
+# build from rust, run from ubuntu
+# ----------------------------------------
+
+# FROM rust AS builder
+# WORKDIR /project/
+# COPY .cargo/config.toml ./.cargo/
+# COPY Cargo.toml .
+# RUN cargo fetch
+# COPY . .
+# RUN cargo build --offline --release
+
+# FROM ubuntu
+# COPY --from=builder /project/target/release/axum_demo /app/
+# EXPOSE 3000
+# CMD [ "/app/axum_demo" ]

@@ -1,0 +1,7 @@
+# use this file for release
+
+services:
+  axum_demo:
+    image: whisperpine/axum_demo:latest
+    ports:
+      - 80:3000
