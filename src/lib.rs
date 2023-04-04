@@ -90,9 +90,9 @@ where
     type Rejection = axum::response::Response;
 
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        use std::collections::HashMap;
+        use ahash::AHashMap;
 
-        let params: Path<HashMap<String, String>> =
+        let params: Path<AHashMap<String, String>> =
             parts.extract().await.map_err(IntoResponse::into_response)?;
 
         let version = params
