@@ -1,7 +1,8 @@
 # use this file for release
 
 services:
-  axum_demo:
-    image: whisperpine/axum_demo:latest
+  axum-demo:
+    image: whisperpine/axum-demo:latest
+    restart: always
     ports:
       - 80:3000
