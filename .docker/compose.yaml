@@ -4,5 +4,18 @@ services:
   axum-demo:
     image: whisperpine/axum-demo:latest
     restart: always
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017
+      - DB_NAME=axum-demo
     ports:
       - 80:3000
+
+  mongo:
+    image: mongo:6.0
+    volumes:
+      - mongo-data-db:/data/db
+      - mongo-config-db:/data/configdb
+
+volumes:
+  mongo-data-db: {}
+  mongo-config-db: {}

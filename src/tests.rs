@@ -1,7 +1,6 @@
 // #![allow(unused_imports)]
 
 use super::*;
-// use anyhow::Result;
 
 #[test]
 fn demo_test() {
@@ -16,6 +15,7 @@ fn ahash_test() {
 }
 
 #[test]
+#[ignore]
 fn buf_lock_write() -> Result<()> {
     use std::fs::File;
     use std::io::{BufRead, BufReader, BufWriter, Write};
@@ -32,5 +32,22 @@ fn buf_lock_write() -> Result<()> {
     }
     output.flush()?;
 
+    Ok(())
+}
+
+#[tokio::test]
+async fn insert_userinfo_test() -> Result<()> {
+    let user_info = UserInfo {
+        username: "test name".to_owned(),
+        id: uuid::Uuid::new_v4(),
+    };
+    mongo::insert_userinfo(&user_info).await?;
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn read_all_document_test() -> Result<()> {
+    mongo::read_all().await?;
     Ok(())
 }

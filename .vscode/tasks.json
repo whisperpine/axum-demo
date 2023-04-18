@@ -6,6 +6,17 @@
             "type": "shell",
             "command": "echo nice",
             "problemMatcher": []
+        },
+        {
+            "label": "RUST_LOG=debug cargo run",
+            "type": "shell",
+            "options": {
+                "env": {
+                    "RUST_LOG": "debug"
+                }
+            },
+            "command": "cargo run",
+            "problemMatcher": []
         }
     ]
 }

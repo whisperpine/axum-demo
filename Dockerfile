@@ -21,6 +21,9 @@ RUN cargo build --offline --release
 
 # 不依赖于任何镜像, 仅利用 Linux 内核执行应用程序
 FROM scratch
+# 设置默认的环境变量
+ENV MONGODB_URI=mongodb://localhost:27017
+ENV DB_NAME=axum-demo
 # 将构建好的应用程序 axum_demo 复制到根目录的 /app 路径中
 COPY --from=builder /project/target/release/axum_demo /app/
 # 开放容器端口

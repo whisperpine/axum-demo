@@ -9,4 +9,17 @@ services:
     ports:
       - 3000:3000
     working_dir: /project
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017
+      - DB_NAME=axum-demo
     command: cargo run
+
+  mongo:
+    image: mongo:6.0
+    volumes:
+      - mongo-data-db:/data/db
+      - mongo-config-db:/data/configdb
+
+volumes:
+  mongo-data-db: {}
+  mongo-config-db: {}

@@ -2,6 +2,8 @@
 pub mod error;
 /// Handle [`axum::extract::Form`] request
 pub mod form;
+/// MongoDB
+pub mod mongo;
 /// Convert [`tower::Service`] inner error [`IntoResponse`]
 pub mod service;
 
@@ -10,6 +12,7 @@ mod tests;
 
 use error::AppError;
 pub use form::{log_form, show_form};
+// pub use mongo::log_mongo;
 
 use anyhow::Result;
 use axum::extract::{Form, Json, Path};
@@ -57,18 +60,20 @@ pub struct CreateUser {
     username: String,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct UserInfo {
     username: String,
     id: Uuid,
 }
 
-pub async fn register_user(Form(value): Form<CreateUser>) -> Json<UserInfo> {
+/// Add [`UserInfo`] to database and response in json format.
+pub async fn register_user(Form(value): Form<CreateUser>) -> Result<Json<UserInfo>, AppError> {
     let user_info = UserInfo {
         username: value.username,
         id: Uuid::new_v4(),
     };
-    Json(user_info)
+    mongo::insert_userinfo(&user_info).await?;
+    Ok(Json(user_info))
 }
 
 #[derive(Debug)]
