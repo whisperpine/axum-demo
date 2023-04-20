@@ -11,13 +11,18 @@ use tracing::info;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
-// set mimalloc as heap memory allocator
+/// Set mimalloc as heap memory allocator.
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
+/// Program version.
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     init_tracing_subscriber();
+
+    info!("app version: {}", VERSION);
 
     // let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     // info!("listening at http://{}", addr);
