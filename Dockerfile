@@ -21,6 +21,8 @@ RUN cargo build --offline --release
 
 # 不依赖于任何镜像, 仅利用 Linux 内核执行应用程序
 FROM scratch
+# 如果希望容器包含一些调试工具, 可以基于 alpine 来构建镜像
+# FROM alpine
 # 设置默认的环境变量
 ENV MONGODB_URI=mongodb://localhost:27017
 ENV DB_NAME=axum-demo

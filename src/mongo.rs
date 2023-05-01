@@ -5,9 +5,9 @@ use axum::response::Json;
 use mongodb::{options::ClientOptions, Client};
 use once_cell::sync::Lazy;
 
-/// Environment variable named `MONGODB_URI`
+/// Environment variable named `MONGODB_URI`.
 const ENV_MONGODB_URI: &'static str = "MONGODB_URI";
-/// Environment variable named `DB_NAME`
+/// Environment variable named `DB_NAME`.
 const ENV_DB_NAME: &'static str = "DB_NAME";
 
 /// Target database name.
@@ -49,7 +49,6 @@ pub async fn log_mongo() -> Result<Json<Vec<String>>, AppError> {
     Ok(Json(texts))
 }
 
-// todo: use env var to setup uri
 /// Connect to mongodb and get client handle
 async fn connect() -> Result<Client> {
     use std::time::Duration;
@@ -101,7 +100,7 @@ pub async fn list_collections(db_name: &str) -> Result<()> {
     Ok(())
 }
 
-/// Insert given [`UserInfo`] to mongodb
+/// Insert given [`UserInfo`] to mongodb.
 pub async fn insert_userinfo(user_info: &UserInfo) -> Result<()> {
     let db = connect().await?.database(DB_NAME.as_str());
     let collection = db.collection::<UserInfo>("user");
