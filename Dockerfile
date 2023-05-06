@@ -46,7 +46,7 @@ CMD [ "/app/axum_demo" ]
 # COPY . .
 # RUN cargo build --offline --release
 
-# FROM ubuntu
+# FROM debian
 # COPY --from=builder /project/target/release/axum_demo /app/
 # EXPOSE 3000
 # CMD [ "/app/axum_demo" ]

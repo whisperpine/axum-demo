@@ -31,7 +31,7 @@ async fn main() -> anyhow::Result<()> {
 
     axum::Server::bind(&addr)
         .serve(app().into_make_service())
-        .with_graceful_shutdown(shutdown())
+        // .with_graceful_shutdown(shutdown())
         .await?;
 
     Ok(())
