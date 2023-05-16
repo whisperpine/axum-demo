@@ -11,7 +11,8 @@ use tracing::info;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
-/// Set mimalloc as heap memory allocator.
+/// Set mimalloc as heap memory allocator when then `mimalloc` feature is enabled.
+#[cfg(feature = "mimalloc")]
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
@@ -31,7 +32,7 @@ async fn main() -> anyhow::Result<()> {
 
     axum::Server::bind(&addr)
         .serve(app().into_make_service())
-        // .with_graceful_shutdown(shutdown())
+        .with_graceful_shutdown(shutdown())
         .await?;
 
     Ok(())
