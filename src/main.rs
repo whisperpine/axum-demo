@@ -1,16 +1,3 @@
-use axum::error_handling::HandleErrorLayer;
-use axum::routing::get;
-use axum::Router;
-use axum_demo::mongo;
-use axum_demo::service::{buffer_error_handler, timeout_error_handler};
-use axum_demo::*;
-use std::net::SocketAddr;
-use std::time::Duration;
-use tower::ServiceBuilder;
-use tracing::info;
-use tracing_subscriber::layer::SubscriberExt;
-use tracing_subscriber::util::SubscriberInitExt;
-
 /// Set mimalloc as heap memory allocator when then `mimalloc` feature is enabled.
 #[cfg(feature = "mimalloc")]
 #[global_allocator]
@@ -21,24 +8,28 @@ const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    use std::net::SocketAddr;
+    use tracing::info;
+
     init_tracing_subscriber();
 
     info!("app version: {}", VERSION);
 
-    // let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    // info!("listening at http://{}", addr);
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
     info!("listening at http://localhost:{}", addr.port());
 
     axum::Server::bind(&addr)
         .serve(app().into_make_service())
-        .with_graceful_shutdown(shutdown())
+        .with_graceful_shutdown(axum_demo::shutdown())
         .await?;
 
     Ok(())
 }
 
 fn init_tracing_subscriber() {
+    use tracing_subscriber::layer::SubscriberExt;
+    use tracing_subscriber::util::SubscriberInitExt;
+
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -48,8 +39,15 @@ fn init_tracing_subscriber() {
         .init();
 }
 
-fn app() -> Router {
-    Router::new()
+fn app() -> axum::Router {
+    use axum::error_handling::HandleErrorLayer;
+    use axum::routing::get;
+    use axum_demo::service::{buffer_error_handler, timeout_error_handler};
+    use axum_demo::*;
+    use std::time::Duration;
+    use tower::ServiceBuilder;
+
+    axum::Router::new()
         .route("/", get(handler_root).post(register_user))
         .route("/mongo", get(mongo::log_mongo))
         .route("/form", get(show_form).post(log_form))

@@ -109,7 +109,7 @@ pub async fn insert_userinfo(user_info: &UserInfo) -> Result<()> {
     Ok(())
 }
 
-/// Read all [`UserInfo`] from [`DB_NAME`] database.
+/// Read all [`UserInfo`] from `DB_NAME` database.
 pub async fn read_all() -> Result<Vec<UserInfo>> {
     use futures::TryStreamExt;
 

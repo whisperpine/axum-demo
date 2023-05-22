@@ -1,3 +1,5 @@
+//! Demo project for [axum](https://github.com/tokio-rs/axum) based web server.
+
 /// From [`anyhow::Error`] to [`AppError`] which impl [`IntoResponse`]
 pub mod error;
 /// Handle [`axum::extract::Form`] request
