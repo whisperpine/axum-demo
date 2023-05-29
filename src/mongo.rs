@@ -6,9 +6,9 @@ use mongodb::{options::ClientOptions, Client};
 use once_cell::sync::Lazy;
 
 /// Environment variable named `MONGODB_URI`.
-const ENV_MONGODB_URI: &'static str = "MONGODB_URI";
+const ENV_MONGODB_URI: &str = "MONGODB_URI";
 /// Environment variable named `DB_NAME`.
-const ENV_DB_NAME: &'static str = "DB_NAME";
+const ENV_DB_NAME: &str = "DB_NAME";
 
 /// Target database name.
 static DB_NAME: Lazy<String> = Lazy::new(|| match std::env::var(ENV_DB_NAME) {
