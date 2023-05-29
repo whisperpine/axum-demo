@@ -1,8 +1,11 @@
-# use this file for release
+# use this file for production.
 
 services:
   axum-demo:
     image: whisperpine/axum-demo:latest
+    pull_policy: always
+    container_name: axum-demo
+    hostname: axum-demo
     restart: always
     environment:
       - MONGODB_URI=mongodb://mongo:27017
@@ -12,6 +15,7 @@ services:
 
   mongo:
     image: mongo:6.0
+    pull_policy: always
     volumes:
       - mongo-data-db:/data/db
       - mongo-config-db:/data/configdb
