@@ -1,8 +1,6 @@
 # ----------------------------------------
-# 使用国内的镜像仓库, 降低拉取第三方 crate 的耗时
+# 减少需要下载的第三方 crate 数据体积, 详见:
+# https://rust-lang.github.io/rfcs/2789-sparse-index.html
 # ----------------------------------------
-[source.crates-io]
-replace-with = "ustc"
-
-[source.ustc]
-registry = "git://mirrors.ustc.edu.cn/crates.io-index"
+[registries.crates-io]
+protocol = "sparse"
