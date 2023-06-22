@@ -1,6 +1,5 @@
-# ----------------------------------------
-# 减少需要下载的第三方 crate 数据体积, 详见:
-# https://rust-lang.github.io/rfcs/2789-sparse-index.html
-# ----------------------------------------
-[registries.crates-io]
-protocol = "sparse"
+# Workspace cargo config
+
+# sparse protocol is supported by default since rust v1.70
+# [registries.crates-io]
+# protocol = "sparse"

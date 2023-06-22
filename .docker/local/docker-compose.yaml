@@ -1,21 +1,19 @@
-# use this file for production.
+# Use this file for local test.
 
 services:
   axum-demo:
-    image: whisperpine/axum-demo:latest
-    pull_policy: always
+    image: axum-demo
+    pull_policy: never
     container_name: axum-demo
     hostname: axum-demo
-    restart: always
     environment:
       - MONGODB_URI=mongodb://mongo:27017
       - DB_NAME=axum-demo
     ports:
-      - 80:3000
+      - 3000:3000
 
   mongo:
     image: mongo:6.0
-    pull_policy: always
     volumes:
       - mongo-data-db:/data/db
       - mongo-config-db:/data/configdb
