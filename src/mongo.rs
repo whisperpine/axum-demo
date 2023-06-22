@@ -13,13 +13,13 @@ const ENV_DB_NAME: &str = "DB_NAME";
 /// Target database name.
 static DB_NAME: Lazy<String> = Lazy::new(|| match std::env::var(ENV_DB_NAME) {
     Ok(value) => {
-        println!("{}={}", ENV_DB_NAME, value);
+        tracing::info!("{}={}", ENV_DB_NAME, value);
         value
     }
     Err(_) => {
         let default_db_name = "axum-demo";
-        println!("{} env var hasn't been set", ENV_DB_NAME);
-        println!("Using default value: {}", default_db_name);
+        tracing::warn!("{} env var hasn't been set", ENV_DB_NAME);
+        tracing::warn!("Using default value: {}", default_db_name);
         default_db_name.to_owned()
     }
 });
@@ -27,13 +27,13 @@ static DB_NAME: Lazy<String> = Lazy::new(|| match std::env::var(ENV_DB_NAME) {
 /// MongoDB Uri.
 static MONGODB_URI: Lazy<String> = Lazy::new(|| match std::env::var(ENV_MONGODB_URI) {
     Ok(value) => {
-        println!("{}={}", ENV_MONGODB_URI, value);
+        tracing::info!("{}={}", ENV_MONGODB_URI, value);
         value
     }
     Err(_) => {
         let default_uri = "mongodb://localhost:27017";
-        println!("{} env var hasn't been set", ENV_MONGODB_URI);
-        println!("Using default value: {}", default_uri);
+        tracing::warn!("{} env var hasn't been set", ENV_MONGODB_URI);
+        tracing::warn!("Using default value: {}", default_uri);
         default_uri.to_owned()
     }
 });

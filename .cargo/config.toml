@@ -1,5 +1,17 @@
 # Workspace cargo config
+# See more on The Cargo Book:
+# https://doc.rust-lang.org/cargo/reference/config.html
 
-# sparse protocol is supported by default since rust v1.70
+# sparse protocol is supported by default since rust v1.70.
 # [registries.crates-io]
 # protocol = "sparse"
+
+
+# [build]
+# rustflags = [
+#     # Statically linked C runtimes.
+#     # Rust Reference: https://doc.rust-lang.org/reference/linkage.html
+#     # Rust RFC: https://rust-lang.github.io/rfcs/1721-crt-static.html
+#     "-C",
+#     "target-feature=+crt-static",
+# ]

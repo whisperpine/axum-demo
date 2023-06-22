@@ -9,14 +9,14 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     use std::net::SocketAddr;
-    use tracing::info;
 
     init_tracing_subscriber();
+    print_libc_linkage();
 
-    info!("app version: {}", VERSION);
+    tracing::info!("app version: {}", VERSION);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
-    info!("listening at http://localhost:{}", addr.port());
+    tracing::info!("listening at http://localhost:{}", addr.port());
 
     axum::Server::bind(&addr)
         .serve(app().into_make_service())
@@ -37,6 +37,15 @@ fn init_tracing_subscriber() {
         )
         .with(tracing_subscriber::fmt::layer())
         .init();
+}
+
+#[cfg(target_feature = "crt-static")]
+fn print_libc_linkage() {
+    tracing::info!("the C runtime is linked statically");
+}
+#[cfg(not(target_feature = "crt-static"))]
+fn print_libc_linkage() {
+    tracing::info!("the C runtime is linked dynamically");
 }
 
 fn app() -> axum::Router {

@@ -16,6 +16,8 @@ services:
   mongo:
     image: mongo:6.0
     pull_policy: always
+    container_name: axum-demo-mongo
+    hostname: axum-demo-mongo
     volumes:
       - mongo-data-db:/data/db
       - mongo-config-db:/data/configdb

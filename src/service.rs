@@ -4,19 +4,19 @@ use tokio::time::error::Elapsed;
 use tower::BoxError;
 
 pub async fn buffer_error_handler(_: BoxError) -> impl IntoResponse {
-    (
-        StatusCode::TOO_MANY_REQUESTS,
-        "request count reaches the buffer limit",
-    )
+    let err_msg = "request count reaches the buffer limit";
+    tracing::error!(err_msg);
+    (StatusCode::TOO_MANY_REQUESTS, err_msg)
 }
 
 pub async fn timeout_error_handler(err: BoxError) -> impl IntoResponse {
     if err.is::<Elapsed>() {
-        (StatusCode::REQUEST_TIMEOUT, "request timed out".to_string())
+        let err_msg = "request timed out".to_owned();
+        tracing::error!(err_msg);
+        (StatusCode::REQUEST_TIMEOUT, err_msg)
     } else {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("internal server error: {}", err),
-        )
+        let err_msg = format!("internal server error: {}", err);
+        tracing::error!(err_msg);
+        (StatusCode::INTERNAL_SERVER_ERROR, err_msg)
     }
 }

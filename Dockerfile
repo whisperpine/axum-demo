@@ -15,7 +15,6 @@ RUN cargo fetch
 COPY . .
 RUN cargo build --release --offline
 
-
 FROM scratch
 # Set default envrionment variable.
 ENV MONGODB_URI=mongodb://localhost:27017
