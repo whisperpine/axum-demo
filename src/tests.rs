@@ -27,8 +27,8 @@ fn buf_lock_write() -> Result<()> {
     let mut lock = std::io::stdout().lock();
     for line in BufReader::new(file).lines() {
         let text = line?;
-        writeln!(lock, "{}", text)?;
-        writeln!(output, "{}", text)?;
+        writeln!(&mut lock, "{}", text)?;
+        writeln!(&mut output, "{}", text)?;
     }
     output.flush()?;
 
@@ -50,4 +50,15 @@ async fn insert_userinfo_test() -> Result<()> {
 async fn read_all_document_test() -> Result<()> {
     mongo::read_all().await?;
     Ok(())
+}
+
+#[test]
+#[ignore]
+fn mem_take() {
+    use std::mem;
+
+    let mut v: Vec<i32> = vec![1, 2];
+    let old_v = mem::take(&mut v);
+    assert_eq!(vec![1, 2], old_v);
+    assert!(v.is_empty());
 }
