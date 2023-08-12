@@ -1,4 +1,10 @@
 {
+    "files.associations": {
+        "LICENSE": "plain test"
+    },
+    "files.readonlyInclude": {
+        "LICENSE": true,
+    },
     "cSpell.words": [
         "ahash",
         "libc",
