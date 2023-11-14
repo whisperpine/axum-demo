@@ -1,5 +1,8 @@
 //! Demo project for [axum](https://github.com/tokio-rs/axum) based web server.
 
+#![deny(unsafe_op_in_unsafe_fn)]
+#![deny(clippy::disallowed_types)]
+
 /// From [`anyhow::Error`] to [`AppError`] which impl [`IntoResponse`]
 pub mod error;
 /// Handle [`axum::extract::Form`] request

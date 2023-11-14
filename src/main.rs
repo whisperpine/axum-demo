@@ -1,3 +1,6 @@
+#![deny(unsafe_op_in_unsafe_fn)]
+#![deny(clippy::disallowed_types)]
+
 /// Set mimalloc as heap memory allocator when then `mimalloc` feature is enabled.
 #[cfg(feature = "mimalloc")]
 #[global_allocator]
