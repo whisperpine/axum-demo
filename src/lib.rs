@@ -17,7 +17,6 @@ mod tests;
 
 use error::AppError;
 pub use form::{log_form, show_form};
-// pub use mongo::log_mongo;
 
 use anyhow::Result;
 use axum::extract::{Form, Json, Path};
@@ -27,12 +26,34 @@ use serde::{Deserialize, Serialize};
 use tracing::info;
 use uuid::Uuid;
 
+pub fn app() -> axum::Router {
+    use crate::service::{buffer_error_handler, timeout_error_handler};
+    use axum::error_handling::HandleErrorLayer;
+    use axum::routing::get;
+    use std::time::Duration;
+    use tower::ServiceBuilder;
+
+    axum::Router::new()
+        .route("/", get(handler_root).post(register_user))
+        .route("/mongo", get(mongo::log_mongo))
+        .route("/form", get(show_form).post(log_form))
+        .route("/path/:path_id", get(log_path))
+        .route("/error", get(app_error))
+        .fallback(handler_404)
+        .layer(
+            ServiceBuilder::new()
+                .layer(HandleErrorLayer::new(buffer_error_handler))
+                .buffer(100)
+                .layer(HandleErrorLayer::new(timeout_error_handler))
+                .timeout(Duration::from_millis(500)),
+        )
+}
+
 /// Graceful shutdown
 ///
-/// Shutdown the server when pressing Ctrl+C.
+/// Shutdown the server when pressing `Ctrl+C`.
 pub async fn shutdown() {
     use tokio::signal;
-
     let ctrl_c = async {
         signal::ctrl_c()
             .await
