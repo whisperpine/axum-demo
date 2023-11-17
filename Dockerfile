@@ -1,5 +1,5 @@
 # ----------------------------------------
-# build from rust:alpine, start from scratch
+# build from rust:alpine, start from busybox
 # ----------------------------------------
 
 # From rust docker image base on alpine.
@@ -15,7 +15,8 @@ RUN cargo fetch
 COPY . .
 RUN cargo build --release --offline
 
-FROM scratch
+# Start from busybox with basic utilities.
+FROM busybox:musl
 # Set default envrionment variable.
 ENV MONGODB_URI=mongodb://localhost:27017
 ENV DB_NAME=axum-demo
