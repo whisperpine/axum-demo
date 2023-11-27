@@ -6,9 +6,6 @@
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
-/// Program version.
-const VERSION: &str = env!("CARGO_PKG_VERSION");
-
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     use std::net::SocketAddr;
@@ -16,15 +13,13 @@ async fn main() -> anyhow::Result<()> {
     init_tracing_subscriber();
     print_libc_linkage();
 
-    tracing::info!("app version: {}", VERSION);
+    tracing::info!("app version: {}", axum_demo::PKG_VERSION);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
     tracing::info!("listening at http://localhost:{}", addr.port());
 
-    axum::Server::bind(&addr)
-        .serve(axum_demo::app().into_make_service())
-        .with_graceful_shutdown(axum_demo::shutdown())
-        .await?;
+    let listener = tokio::net::TcpListener::bind(addr).await?;
+    axum::serve(listener, axum_demo::app()).await?;
 
     Ok(())
 }
@@ -36,7 +31,7 @@ fn init_tracing_subscriber() {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "axum_demo=info".into()),
+                .unwrap_or_else(|_| format!("{}=info", axum_demo::CRATE_NAME).into()),
         )
         .with(tracing_subscriber::fmt::layer())
         .init();

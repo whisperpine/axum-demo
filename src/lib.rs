@@ -1,6 +1,6 @@
 //! Demo project for [axum](https://github.com/tokio-rs/axum) based web server.
 
-#![deny(unsafe_op_in_unsafe_fn)]
+#![forbid(unsafe_code)]
 #![deny(clippy::disallowed_types)]
 
 /// From [`anyhow::Error`] to [`AppError`] which impl [`IntoResponse`]
@@ -25,6 +25,12 @@ use axum::response::{Html, IntoResponse, Response};
 use serde::{Deserialize, Serialize};
 use tracing::info;
 use uuid::Uuid;
+
+/// Program version.
+pub const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
+
+/// Crate name.
+pub const CRATE_NAME: &str = env!("CARGO_CRATE_NAME");
 
 pub fn app() -> axum::Router {
     use crate::service::{buffer_error_handler, timeout_error_handler};
