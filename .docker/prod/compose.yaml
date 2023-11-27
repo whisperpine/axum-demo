@@ -2,6 +2,7 @@
 
 services:
   axum-demo:
+    init: true
     image: whisperpine/axum-demo:latest
     pull_policy: always
     container_name: axum-demo
