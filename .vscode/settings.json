@@ -4,6 +4,7 @@
     },
     "files.readonlyInclude": {
         "LICENSE": true,
+        "target/**": true
     },
     "cSpell.words": [
         "ahash",
