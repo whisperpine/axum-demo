@@ -1,9 +1,11 @@
 {
     "files.associations": {
-        "LICENSE": "plain test"
+        "LICENSE-MIT": "plain text",
+        "LICENSE-APACHE": "plain text"
     },
     "files.readonlyInclude": {
-        "LICENSE": true,
+        "LICENSE-MIT": true,
+        "LICENSE-APACHE": true,
         "target/**": true
     },
     "cSpell.words": [
