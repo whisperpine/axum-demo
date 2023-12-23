@@ -11,6 +11,7 @@
     "cSpell.words": [
         "ahash",
         "libc",
-        "mimalloc"
+        "mimalloc",
+        "aarch64"
     ],
 }
