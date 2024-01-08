@@ -22,22 +22,22 @@ default = ["mimalloc"]
 # heap memory allocator
 mimalloc = { version = "0.1.39", default-features = false, optional = true }
 # web serivce
-axum = "0.7.1"
+axum = "0.7.4"
 tower = { version = "0.4.13", features = ["timeout", "buffer"] }
 # error handling
-anyhow = "1.0.75"
+anyhow = "1.0.79"
 # serialization
-serde = { version = "1.0.193", features = ["derive"] }
-serde_json = "1.0.108"
+serde = { version = "1.0.195", features = ["derive"] }
+serde_json = "1.0.111"
 # async
-tokio = { version = "1.34.0", features = ["full"] }
-futures = "0.3.29"
+tokio = { version = "1.35.1", features = ["full"] }
+futures = "0.3.30"
 # log
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 # utilities
 uuid = { version = "1.6.1", features = ["v4", "serde"] }
-ahash = { version = "0.8.6", features = ["serde"] }
-once_cell = "1.18.0"
+ahash = { version = "0.8.7", features = ["serde"] }
+once_cell = "1.19.0"
 # database
-mongodb = "2.7.1"
+mongodb = "2.8.0"
