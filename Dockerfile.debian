@@ -1,9 +1,9 @@
 # ----------------------------------------
-# build from rust, start from debian
+# build from rust:slim, start from debian
 # ----------------------------------------
 
 # From default rust docker image.
-FROM rust AS builder
+FROM rust:slim AS builder
 WORKDIR /project/
 # Copy workspace scope cargo config.
 COPY .cargo/config.toml ./.cargo/

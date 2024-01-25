@@ -3,10 +3,11 @@
 # ----------------------------------------
 
 # From rust official docker image.
-FROM rust AS builder
+FROM rust:slim AS builder
 # To statically link our program to the musl libc.
 RUN rustup target add x86_64-unknown-linux-musl
-RUN apt-get update && apt-get install -y musl-tools musl-dev
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y musl-tools musl-dev
 WORKDIR /project/
 # Copy workspace scope cargo config.
 COPY .cargo/config.toml ./.cargo/

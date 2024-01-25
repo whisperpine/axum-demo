@@ -5,7 +5,7 @@
 # From rust docker image base on alpine.
 FROM rust:alpine AS builder
 # To statically link to glibc.
-RUN apk update && apk add libc-dev
+RUN apk update && apk add --no-cache libc-dev
 WORKDIR /project/
 # Copy workspace scope cargo config.
 COPY .cargo/config.toml ./.cargo/
