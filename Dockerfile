@@ -24,5 +24,11 @@ ENV DB_NAME=axum-demo
 COPY --from=builder \
     /project/target/release/axum_demo \
     /app/
+# non-root user
+RUN addgroup -S myapp && adduser -S myapp -G myapp
+RUN chown -R myapp:myapp /app
+USER myapp
+# The network ports that this container will listen on.
 EXPOSE 3000
+# Provide defaults for an executing container.
 CMD [ "/app/axum_demo" ]

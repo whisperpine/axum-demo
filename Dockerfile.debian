@@ -2,15 +2,26 @@
 # build from rust, start from debian
 # ----------------------------------------
 
+# From default rust docker image.
 FROM rust AS builder
 WORKDIR /project/
+# Copy workspace scope cargo config.
 COPY .cargo/config.toml ./.cargo/
 COPY Cargo.toml .
+# Download dependencies according to Cargo.toml.
 RUN cargo fetch
 COPY . .
 RUN cargo build --offline --release
 
+# Start from debian
 FROM debian:12-slim
+# Copy the excutable.
 COPY --from=builder /project/target/release/axum_demo /app/
+# non-root user
+RUN groupadd -r myapp && useradd -g myapp myapp
+RUN chown -R myapp:myapp /app
+USER myapp
+# The network ports that this container will listen on.
 EXPOSE 3000
+# Provide defaults for an executing container.
 CMD [ "/app/axum_demo" ]
