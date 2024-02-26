@@ -1,23 +1,23 @@
-# use this file for dev
+# Use this file for local test.
 
 services:
   axum-demo:
-    image: rust
-    volumes:
-      - .:/project
-      - /project/target
-    ports:
-      - 3000:3000
-    working_dir: /project
+    init: true
+    build:
+      context: .
+      target: final
     environment:
       - MONGODB_URI=mongodb://mongo:27017
       - DB_NAME=axum-demo
-    command: cargo run
+    ports:
+      - 3000:3000
     depends_on:
       - mongo
 
   mongo:
     image: mongo:6.0
+    container_name: axum-demo-mongo
+    hostname: axum-demo-mongo
     volumes:
       - mongo-data-db:/data/db
       - mongo-config-db:/data/configdb
