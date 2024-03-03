@@ -6,6 +6,13 @@ services:
     build:
       context: .
       target: final
+      dockerfile: Dockerfile.dev
+    develop:
+      watch:
+        - action: rebuild
+          path: src
+        - action: rebuild
+          path: index.html
     environment:
       - MONGODB_URI=mongodb://mongo:27017
       - DB_NAME=axum-demo
