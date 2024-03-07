@@ -1,11 +1,6 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::disallowed_types)]
 
-/// Set mimalloc as heap memory allocator when then `mimalloc` feature is enabled.
-#[cfg(all(feature = "mimalloc", not(target_arch = "aarch64")))]
-#[global_allocator]
-static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
-
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     use std::net::SocketAddr;
