@@ -17,7 +17,7 @@ COPY --from=xx / /
 # Install host build dependencies.
 RUN apk add --no-cache musl-dev clang
 
-# Fetch crates before building stage.
+# Fetch crates before building stage for better caching.
 RUN --mount=type=bind,source=Cargo.toml,target=Cargo.toml \
     --mount=type=cache,target=/usr/local/cargo/registry/ \
     --mount=type=cache,target=/usr/local/cargo/git/db \
@@ -72,7 +72,7 @@ EXPOSE 3000
 
 ARG TARGETPLATFORM
 # Copy the executable from the "build" stage.
-COPY --from=build /app/${TARGETPLATFORM}/${APP_NAME} /app
+COPY --from=build /app/${TARGETPLATFORM}/${APP_NAME} .
 
 # What the container should run when it is started.
 CMD ["/app/axum-demo"]

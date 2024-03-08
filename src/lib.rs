@@ -51,7 +51,7 @@ pub fn app() -> axum::Router {
                 .layer(HandleErrorLayer::new(buffer_error_handler))
                 .buffer(100)
                 .layer(HandleErrorLayer::new(timeout_error_handler))
-                .timeout(Duration::from_millis(500)),
+                .timeout(Duration::from_secs_f32(1.2)),
         )
 }
 
