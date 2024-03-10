@@ -22,6 +22,7 @@ use anyhow::Result;
 use axum::extract::{Form, Json, Path};
 use axum::http::StatusCode;
 use axum::response::{Html, IntoResponse, Response};
+use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 use uuid::Uuid;
@@ -31,6 +32,32 @@ pub const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// Crate name.
 pub const CRATE_NAME: &str = env!("CARGO_CRATE_NAME");
+
+/// Environment variable named `TIMEOUT_SECS`
+const ENV_TIMEOUT_SECS: &str = "TIMEOUT_SECS";
+
+/// Timeout seconds for server internal process.
+static TIMEOUT_SECS: Lazy<f32> = Lazy::new(|| match std::env::var(ENV_TIMEOUT_SECS) {
+    Ok(value) => match value.parse() {
+        Ok(value) => {
+            tracing::info!("server internal process timeout in seconds: {}", value);
+            value
+        }
+        Err(err) => {
+            tracing::error!("failed to parse ENV_TIMEOUT_SECS to f32");
+            panic!("{}", err);
+        }
+    },
+    Err(_) => {
+        let value = 0.5;
+        tracing::info!(
+            "{} hasn't been set (default value: {})",
+            ENV_TIMEOUT_SECS,
+            value
+        );
+        value
+    }
+});
 
 pub fn app() -> axum::Router {
     use crate::service::{buffer_error_handler, timeout_error_handler};
@@ -51,7 +78,7 @@ pub fn app() -> axum::Router {
                 .layer(HandleErrorLayer::new(buffer_error_handler))
                 .buffer(100)
                 .layer(HandleErrorLayer::new(timeout_error_handler))
-                .timeout(Duration::from_secs_f32(1.2)),
+                .timeout(Duration::from_secs_f32(*TIMEOUT_SECS)),
         )
 }
 

@@ -16,6 +16,7 @@ services:
     environment:
       - MONGODB_URI=mongodb://mongo:27017
       - DB_NAME=axum-demo
+      - TIMEOUT_SECS=0.3
     ports:
       - 3000:3000
     depends_on:

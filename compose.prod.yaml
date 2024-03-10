@@ -22,6 +22,7 @@ services:
     volumes:
       - mongo-data-db:/data/db
       - mongo-config-db:/data/configdb
+      - TIMEOUT_SECS=0.8
 
 volumes:
   mongo-data-db: {}
