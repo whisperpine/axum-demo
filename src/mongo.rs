@@ -24,7 +24,7 @@ static DB_NAME: Lazy<String> = Lazy::new(|| match std::env::var(ENV_DB_NAME) {
     }
 });
 
-/// MongoDB Uri.
+/// MongoDB connection string.
 static MONGODB_URI: Lazy<String> = Lazy::new(|| match std::env::var(ENV_MONGODB_URI) {
     Ok(value) => {
         tracing::info!("{}={}", ENV_MONGODB_URI, value);
@@ -49,7 +49,7 @@ pub async fn log_mongo() -> Result<Json<Vec<String>>, AppError> {
     Ok(Json(texts))
 }
 
-/// Connect to mongodb and get client handle
+/// Connect to mongodb and get client handle.
 async fn connect() -> Result<Client> {
     use std::time::Duration;
     use tokio::time::timeout;
@@ -70,7 +70,9 @@ async fn connect() -> Result<Client> {
     };
 
     // Manually set an option.
-    client_options.app_name = Some("axum-demo".to_owned());
+    client_options
+        .app_name
+        .get_or_insert(crate::CRATE_NAME.to_owned());
 
     // Get a handle to the deployment.
     let client = Client::with_options(client_options)?;
