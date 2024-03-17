@@ -119,9 +119,7 @@ pub async fn handler_404() -> Response {
 
 /// "/" handler
 pub async fn handler_root() -> Html<&'static str> {
-    // use std::time::Duration;
-    // tokio::time::sleep(Duration::from_millis(300)).await;
-    Html(include_str!("../index.html"))
+    Html(include_str!("../pages/index.html"))
 }
 
 pub async fn log_path(Path(value): Path<String>) {

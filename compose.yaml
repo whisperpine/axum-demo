@@ -14,9 +14,10 @@ services:
         - action: rebuild
           path: index.html
     environment:
-      - MONGODB_URI=mongodb://mongo:27017
-      - DB_NAME=axum-demo
-      - TIMEOUT_SECS=0.3
+      MONGODB_URI: mongodb://mongo:27017
+      DB_NAME: axum-demo
+      TIMEOUT_SECS: 0.3
+      RUST_LOG: axum_demo=debug
     ports:
       - 3000:3000
     depends_on:
