@@ -7,8 +7,10 @@ services:
     pull_policy: always
     restart: always
     environment:
-      - MONGODB_URI=mongodb://mongo:27017
-      - DB_NAME=axum-demo
+      MONGODB_URI: mongodb://mongo:27017
+      DB_NAME: axum-demo
+      TIMEOUT_SECS: 0.8
+      # RUST_LOG: axum_demo=debug
     ports:
       - 3000:3000
     depends_on:
@@ -17,12 +19,9 @@ services:
   mongo:
     image: mongo:6.0
     pull_policy: always
-    container_name: axum-demo-mongo
-    hostname: axum-demo-mongo
     volumes:
       - mongo-data-db:/data/db
       - mongo-config-db:/data/configdb
-      - TIMEOUT_SECS=0.8
 
 volumes:
   mongo-data-db: {}
