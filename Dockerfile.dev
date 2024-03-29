@@ -1,9 +1,11 @@
 # This file is intended to be used in conjunction with `docker compose watch`.
+# For the multistage, renew the ARG by simply stating: ARG XXX
+ARG APP_NAME=axum-demo
 
 ################################################################################
 # Create a stage for building the application.
 FROM rust:alpine AS build
-ARG APP_NAME=axum-demo
+ARG APP_NAME
 WORKDIR /app
 
 # Install host build dependencies.
@@ -31,6 +33,7 @@ RUN --mount=type=bind,source=Cargo.toml,target=Cargo.toml \
 # from the build stage where the necessary files are copied from the build stage.
 
 FROM busybox:musl AS final
+ARG APP_NAME
 WORKDIR /app
 
 # Expose the port that the application listens on.
