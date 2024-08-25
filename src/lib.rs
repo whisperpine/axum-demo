@@ -22,8 +22,8 @@ use anyhow::Result;
 use axum::extract::{Form, Json, Path};
 use axum::http::StatusCode;
 use axum::response::{Html, IntoResponse, Response};
-use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
+use std::sync::LazyLock;
 use tracing::info;
 use uuid::Uuid;
 
@@ -36,8 +36,10 @@ pub const CRATE_NAME: &str = env!("CARGO_CRATE_NAME");
 /// Environment variable named `TIMEOUT_SECS`
 const ENV_TIMEOUT_SECS: &str = "TIMEOUT_SECS";
 
+// static NICE: LazyLock<f32> = LazyLock::new()
+
 /// Timeout seconds for server internal process.
-static TIMEOUT_SECS: Lazy<f32> = Lazy::new(|| match std::env::var(ENV_TIMEOUT_SECS) {
+static TIMEOUT_SECS: LazyLock<f32> = LazyLock::new(|| match std::env::var(ENV_TIMEOUT_SECS) {
     Ok(value) => match value.parse() {
         Ok(value) => {
             tracing::info!("server internal process timeout in seconds: {}", value);

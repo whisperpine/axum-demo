@@ -2,8 +2,8 @@ use crate::error::AppError;
 use crate::UserInfo;
 use anyhow::Result;
 use axum::response::Json;
-use mongodb::{options::ClientOptions, Client};
-use once_cell::sync::Lazy;
+use mongodb::{bson::Document, options::ClientOptions, Client};
+use std::sync::LazyLock;
 
 /// Environment variable named `MONGODB_URI`.
 const ENV_MONGODB_URI: &str = "MONGODB_URI";
@@ -11,7 +11,7 @@ const ENV_MONGODB_URI: &str = "MONGODB_URI";
 const ENV_DB_NAME: &str = "DB_NAME";
 
 /// Target database name.
-static DB_NAME: Lazy<String> = Lazy::new(|| match std::env::var(ENV_DB_NAME) {
+static DB_NAME: LazyLock<String> = LazyLock::new(|| match std::env::var(ENV_DB_NAME) {
     Ok(value) => {
         tracing::info!("{}={}", ENV_DB_NAME, value);
         value
@@ -25,7 +25,7 @@ static DB_NAME: Lazy<String> = Lazy::new(|| match std::env::var(ENV_DB_NAME) {
 });
 
 /// MongoDB connection string.
-static MONGODB_URI: Lazy<String> = Lazy::new(|| match std::env::var(ENV_MONGODB_URI) {
+static MONGODB_URI: LazyLock<String> = LazyLock::new(|| match std::env::var(ENV_MONGODB_URI) {
     Ok(value) => {
         tracing::info!("{}={}", ENV_MONGODB_URI, value);
         value
@@ -78,7 +78,7 @@ async fn connect() -> Result<Client> {
     let client = Client::with_options(client_options)?;
 
     // List the names of the databases in that deployment.
-    let databases = client.list_database_names(None, None).await?;
+    let databases = client.list_database_names().await?;
     tracing::debug!(?databases);
 
     Ok(client)
@@ -95,7 +95,7 @@ async fn connect() -> Result<Client> {
 pub async fn list_collections(db_name: &str) -> Result<()> {
     let db = connect().await?.database(db_name);
 
-    for collection_name in db.list_collection_names(None).await? {
+    for collection_name in db.list_collection_names().await? {
         tracing::info!(%collection_name);
     }
 
@@ -106,7 +106,7 @@ pub async fn list_collections(db_name: &str) -> Result<()> {
 pub async fn insert_userinfo(user_info: &UserInfo) -> Result<()> {
     let db = connect().await?.database(DB_NAME.as_str());
     let collection = db.collection::<UserInfo>("user");
-    collection.insert_one(user_info, None).await?;
+    collection.insert_one(user_info).await?;
 
     Ok(())
 }
@@ -117,7 +117,7 @@ pub async fn read_all() -> Result<Vec<UserInfo>> {
 
     let db = connect().await?.database(DB_NAME.as_str());
     let collection = db.collection::<UserInfo>("user");
-    let mut cursor = collection.find(None, None).await?;
+    let mut cursor = collection.find(Document::new()).await?;
 
     let mut user_infos: Vec<UserInfo> = vec![];
     while let Some(user_info) = cursor.try_next().await? {
