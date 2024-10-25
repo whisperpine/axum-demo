@@ -1,7 +1,7 @@
 {
     "files.associations": {
-        "LICENSE-MIT": "plain text",
-        "LICENSE-APACHE": "plain text"
+        "LICENSE-MIT": "plaintext",
+        "LICENSE-APACHE": "plaintext"
     },
     "files.readonlyInclude": {
         "LICENSE-MIT": true,
