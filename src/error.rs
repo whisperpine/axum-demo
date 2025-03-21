@@ -1,25 +1,22 @@
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 
-/// Wraps [`anyhow::Error`] in order to response
-#[derive(Debug)]
-pub struct AppError(anyhow::Error);
+/// A handy type alias for `Result<T, axum_demo::Error>`.
+pub type Result<T> = std::result::Result<T, Error>;
 
-impl IntoResponse for AppError {
-    fn into_response(self) -> Response {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("anyhow error: {}", self.0),
-        )
-            .into_response()
-    }
+/// Enumeration of errors that can occur in this crate.
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    /// Error raised by mongodb crate.
+    #[error("Mongodb: {0}")]
+    Mongodb(#[from] mongodb::error::Error),
+    /// Execution timeout.
+    #[error("Timeout: {0}")]
+    Timeout(String),
 }
 
-impl<E> From<E> for AppError
-where
-    E: Into<anyhow::Error>,
-{
-    fn from(value: E) -> Self {
-        AppError(value.into())
+impl IntoResponse for Error {
+    fn into_response(self) -> Response {
+        (StatusCode::INTERNAL_SERVER_ERROR, format!("Error: {self}")).into_response()
     }
 }

@@ -27,7 +27,7 @@ mod utils;
 mod tests;
 
 pub use config::{CRATE_NAME, PKG_VERSION, TIMEOUT_SECS};
-pub use error::AppError;
+pub use error::{Error, Result};
 pub use form::{log_form, show_form};
 pub use mongo::{list_collections, log_registered_users, register_user};
 pub use service::{buffer_error_handler, timeout_error_handler};

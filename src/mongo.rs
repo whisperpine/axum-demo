@@ -1,5 +1,4 @@
-use crate::AppError;
-use anyhow::Result;
+use crate::{Error, Result};
 use axum::extract::Form;
 use axum::response::Json;
 use mongodb::{bson::Document, options::ClientOptions, Client};
@@ -47,7 +46,7 @@ pub struct UserInfo {
 }
 
 /// Read all user info and response.
-pub async fn log_registered_users() -> Result<Json<Vec<String>>, AppError> {
+pub async fn log_registered_users() -> Result<Json<Vec<String>>> {
     let user_infos: Vec<UserInfo> = read_all().await?;
     let mut texts: Vec<String> = vec![];
     for UserInfo { username, id } in user_infos {
@@ -61,33 +60,30 @@ async fn connect() -> Result<Client> {
     use std::time::Duration;
     use tokio::time::timeout;
 
-    // Parse a connection string into an options struct.
-    let mut client_options = match timeout(
-        Duration::from_millis(200),
-        ClientOptions::parse(MONGODB_URI.as_str()),
-    )
-    .await
-    {
-        Ok(inner) => inner?,
-        Err(elapsed) => {
-            let error_message = format!("failed to connect to mongodb with in {elapsed}");
-            tracing::error!(error_message);
-            anyhow::bail!(error_message)
-        }
-    };
-
+    const CONNECTION_TIMEOUT_SECS: f32 = 0.2;
+    let mut client_options = ClientOptions::parse(MONGODB_URI.as_str()).await?;
     // Manually set an option.
     client_options
         .app_name
         .get_or_insert(crate::CRATE_NAME.to_owned());
-
-    // Get a handle to the deployment.
     let client = Client::with_options(client_options)?;
-
     // List the names of the databases in that deployment.
-    let databases = client.list_database_names().await?;
+    // And check if the connection to mongodb could be established.
+    let databases = match timeout(
+        Duration::from_secs_f32(CONNECTION_TIMEOUT_SECS),
+        client.list_database_names(),
+    )
+    .await
+    {
+        Ok(inner) => inner?,
+        Err(_) => {
+            let error_message =
+                format!("failed to connect to mongodb within {CONNECTION_TIMEOUT_SECS}s");
+            tracing::error!(error_message);
+            return Err(Error::Timeout(error_message));
+        }
+    };
     tracing::debug!(?databases);
-
     Ok(client)
 }
 
@@ -139,7 +135,7 @@ pub struct CreateUser {
 }
 
 /// Add [`UserInfo`] to database and response in json format.
-pub async fn register_user(Form(value): Form<CreateUser>) -> Result<Json<UserInfo>, AppError> {
+pub async fn register_user(Form(value): Form<CreateUser>) -> Result<Json<UserInfo>> {
     let user_info = UserInfo {
         username: value.username,
         id: Uuid::new_v4(),
