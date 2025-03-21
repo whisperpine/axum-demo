@@ -64,15 +64,15 @@ RUN adduser \
     --shell "/sbin/nologin" \
     --no-create-home \
     --uid "${UID}" \
-    appuser
-USER appuser
+    app
+USER app
 
 # Expose the port that the application listens on.
 EXPOSE 3000
 
 ARG TARGETPLATFORM
 # Copy the executable from the "build" stage.
-COPY --link --from=build /app/${TARGETPLATFORM}/${APP_NAME} .
+COPY --chown=app:app --link --from=build /app/${TARGETPLATFORM}/${APP_NAME} .
 
 # What the container should run when it is started.
 CMD ["/app/axum-demo"]
