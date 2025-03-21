@@ -43,7 +43,7 @@ pub async fn log_mongo() -> Result<Json<Vec<String>>, AppError> {
     let user_infos: Vec<UserInfo> = read_all().await?;
     let mut texts: Vec<String> = vec![];
     for UserInfo { username, id } in user_infos {
-        texts.push(format!("{}: {}", username, id));
+        texts.push(format!("{username}: {id}"));
     }
 
     Ok(Json(texts))
@@ -63,7 +63,7 @@ async fn connect() -> Result<Client> {
     {
         Ok(inner) => inner?,
         Err(elapsed) => {
-            let error_message = format!("failed to connect to mongodb with in {}", elapsed);
+            let error_message = format!("failed to connect to mongodb with in {elapsed}");
             tracing::error!(error_message);
             anyhow::bail!(error_message)
         }

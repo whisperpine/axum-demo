@@ -1,5 +1,16 @@
-#![forbid(unsafe_code)]
-#![deny(clippy::disallowed_types)]
+//! Demo project for [axum](https://github.com/tokio-rs/axum) based web server.
+
+// rustc
+#![cfg_attr(debug_assertions, allow(unused))]
+#![cfg_attr(not(debug_assertions), warn(missing_docs))]
+#![cfg_attr(not(debug_assertions), deny(clippy::unwrap_used))]
+#![cfg_attr(not(debug_assertions), deny(warnings))]
+// clippy
+#![cfg_attr(not(debug_assertions), deny(clippy::todo))]
+#![cfg_attr(
+    not(any(test, debug_assertions)),
+    deny(clippy::print_stdout, clippy::dbg_macro)
+)]
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {

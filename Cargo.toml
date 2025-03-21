@@ -18,7 +18,8 @@ strip = "symbols"
 
 [dependencies]
 # web serivce
-axum = "0.7.5"
+# axum = "0.8.1"
+axum = "0.7.4"
 tower = { version = "0.5.0", features = ["timeout", "buffer"] }
 # error handling
 anyhow = "1.0.86"
@@ -35,4 +36,48 @@ tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 uuid = { version = "1.10.0", features = ["v4", "serde"] }
 ahash = { version = "0.8.11", features = ["serde"] }
 # database
-mongodb = "3.0.1"
+mongodb = "3.2.3"
+
+
+# rustc lints (https://doc.rust-lang.org/rustc/lints/index.html)
+[lints.rust]
+# lint groups (https://doc.rust-lang.org/rustc/lints/groups.html)
+rust-2024-compatibility = { level = "warn", priority = -1 }
+future-incompatible = { level = "deny", priority = -1 }
+deprecated-safe = { level = "deny", priority = -1 }
+# lint listing (https://doc.rust-lang.org/rustc/lints/listing/index.html)
+missing_debug_implementations = "deny"
+unreachable_pub = "deny"
+unsafe_code = "forbid"
+
+# rustdoc lints (https://doc.rust-lang.org/rustdoc/lints.html)
+[lints.rustdoc]
+broken_intra_doc_links = "deny"
+unescaped_backticks = "deny"
+
+# clippy lints (https://rust-lang.github.io/rust-clippy/master/index.html)
+[lints.clippy]
+inefficient_to_string = "warn"
+rest_pat_in_fully_bound_structs = "warn"
+match_wildcard_for_single_variants = "warn"
+fn_params_excessive_bools = "warn"
+unnested_or_patterns = "warn"
+verbose_file_reads = "warn"
+uninlined_format_args = "warn"
+needless_continue = "warn"
+allow_attributes = "warn"
+lossy_float_literal = "warn"
+option_option = "warn"
+macro_use_imports = "warn"
+disallowed_types = "deny"
+str_to_string = "warn"
+match_on_vec_items = "warn"
+suboptimal_flops = "warn"
+enum_glob_use = "warn"
+filter_map_next = "warn"
+imprecise_flops = "warn"
+unused_self = "warn"
+empty_enum = "warn"
+linkedlist = "warn"
+mem_forget = "warn"
+exit = "warn"

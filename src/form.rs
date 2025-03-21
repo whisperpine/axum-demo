@@ -2,7 +2,6 @@ use axum::extract::Form;
 use axum::response::Html;
 use serde::Deserialize;
 
-#[allow(dead_code)]
 #[derive(Deserialize, Debug)]
 pub struct UserInfo {
     username: String,
