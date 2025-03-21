@@ -72,7 +72,7 @@ EXPOSE 3000
 
 ARG TARGETPLATFORM
 # Copy the executable from the "build" stage.
-COPY --chown=app:app --link --from=build /app/${TARGETPLATFORM}/${APP_NAME} .
+COPY --chown=app:app --from=build /app/${TARGETPLATFORM}/${APP_NAME} .
 
 # What the container should run when it is started.
 CMD ["/app/axum-demo"]
