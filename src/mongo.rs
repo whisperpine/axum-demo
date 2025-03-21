@@ -1,9 +1,11 @@
-use crate::error::AppError;
-use crate::UserInfo;
+use crate::AppError;
 use anyhow::Result;
+use axum::extract::Form;
 use axum::response::Json;
 use mongodb::{bson::Document, options::ClientOptions, Client};
+use serde::{Deserialize, Serialize};
 use std::sync::LazyLock;
+use uuid::Uuid;
 
 /// Environment variable named `MONGODB_URI`.
 const ENV_MONGODB_URI: &str = "MONGODB_URI";
@@ -38,14 +40,19 @@ static MONGODB_URI: LazyLock<String> = LazyLock::new(|| match std::env::var(ENV_
     }
 });
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserInfo {
+    username: String,
+    id: Uuid,
+}
+
 /// Read all user info and response.
-pub async fn log_mongo() -> Result<Json<Vec<String>>, AppError> {
+pub async fn log_registered_users() -> Result<Json<Vec<String>>, AppError> {
     let user_infos: Vec<UserInfo> = read_all().await?;
     let mut texts: Vec<String> = vec![];
     for UserInfo { username, id } in user_infos {
         texts.push(format!("{username}: {id}"));
     }
-
     Ok(Json(texts))
 }
 
@@ -94,16 +101,14 @@ async fn connect() -> Result<Client> {
 /// ```
 pub async fn list_collections(db_name: &str) -> Result<()> {
     let db = connect().await?.database(db_name);
-
     for collection_name in db.list_collection_names().await? {
         tracing::info!(%collection_name);
     }
-
     Ok(())
 }
 
 /// Insert given [`UserInfo`] to mongodb.
-pub async fn insert_userinfo(user_info: &UserInfo) -> Result<()> {
+async fn insert_userinfo(user_info: &UserInfo) -> Result<()> {
     let db = connect().await?.database(DB_NAME.as_str());
     let collection = db.collection::<UserInfo>("user");
     collection.insert_one(user_info).await?;
@@ -112,7 +117,7 @@ pub async fn insert_userinfo(user_info: &UserInfo) -> Result<()> {
 }
 
 /// Read all [`UserInfo`] from `DB_NAME` database.
-pub async fn read_all() -> Result<Vec<UserInfo>> {
+async fn read_all() -> Result<Vec<UserInfo>> {
     use futures::TryStreamExt;
 
     let db = connect().await?.database(DB_NAME.as_str());
@@ -126,4 +131,19 @@ pub async fn read_all() -> Result<Vec<UserInfo>> {
     }
 
     Ok(user_infos)
+}
+
+#[derive(Debug, Deserialize)]
+pub struct CreateUser {
+    username: String,
+}
+
+/// Add [`UserInfo`] to database and response in json format.
+pub async fn register_user(Form(value): Form<CreateUser>) -> Result<Json<UserInfo>, AppError> {
+    let user_info = UserInfo {
+        username: value.username,
+        id: Uuid::new_v4(),
+    };
+    insert_userinfo(&user_info).await?;
+    Ok(Json(user_info))
 }
