@@ -178,7 +178,6 @@ use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
 use axum::RequestPartsExt;
 
-#[axum::async_trait]
 impl<S> FromRequestParts<S> for Version
 where
     S: Send + Sync,
