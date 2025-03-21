@@ -9,12 +9,13 @@ services:
       context: .
       target: final
       dockerfile: Dockerfile.dev
+      pull: false
     develop:
       watch:
         - action: rebuild
           path: src
         - action: rebuild
-          path: index.html
+          path: pages/
     environment:
       MONGODB_URI: mongodb://mongo:27017
       DB_NAME: axum-demo
