@@ -9,8 +9,9 @@ pub async fn handler_root() -> Html<&'static str> {
 }
 
 /// Log url path.
-pub async fn log_path(Path(value): Path<String>) {
+pub async fn log_path(Path(value): Path<String>) -> String {
     info!("{}", value);
+    value
 }
 
 /// Routing fallback.

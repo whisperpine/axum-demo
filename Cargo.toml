@@ -1,6 +1,6 @@
 [package]
 name = "axum_demo"
-version = "0.6.0"
+version = "0.6.1-alpha"
 edition = "2021"
 authors = ["Yusong Lai <yusong.lai@icloud.com>"]
 repository = "https://github.com/whisperpine/axum-demo"
