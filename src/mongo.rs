@@ -92,7 +92,7 @@ async fn connect() -> Result<Client> {
 /// ```
 /// # async fn demo() {
 /// // "admin" is one of the default database in mongodb
-/// axum_demo::mongo::list_collections("admin").await.unwrap();
+/// axum_demo::list_collections("admin").await.unwrap();
 /// # }
 /// ```
 pub async fn list_collections(db_name: &str) -> Result<()> {
