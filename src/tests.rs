@@ -2,10 +2,10 @@ use super::*;
 
 #[tokio::test]
 async fn test_log_path() {
-    use axum::body::{to_bytes, Body};
+    use axum::body::{Body, to_bytes};
     use axum::http::Request;
     use axum::routing::get;
-    use tower::ServiceExt; // For .oneshot()
+    use tower::ServiceExt; // For oneshot()
 
     let app = axum::Router::new().route("/path/{path_id}", get(log_path));
 
