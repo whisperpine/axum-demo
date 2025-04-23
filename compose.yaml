@@ -8,7 +8,7 @@ services:
     build:
       context: .
       target: final
-      dockerfile: Dockerfile.dev
+      dockerfile: dev.Dockerfile
       pull: false
     develop:
       watch:

@@ -1,4 +1,6 @@
 # This file is intended to be used in conjunction with `docker compose watch`.
+# Caution: this file should only be used in development, **not** in production.
+
 # For the multistage, renew the ARG by simply stating: ARG XXX
 ARG APP_NAME=axum-demo
 
