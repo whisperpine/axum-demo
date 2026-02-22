@@ -13,25 +13,24 @@ const ENV_TIMEOUT_SECS: &str = "TIMEOUT_SECS";
 pub static TIMEOUT_SECS: LazyLock<f32> = LazyLock::new(get_timeout_secs);
 
 fn get_timeout_secs() -> f32 {
-    match std::env::var(ENV_TIMEOUT_SECS) {
-        Ok(value) => match value.parse() {
+    if let Ok(value) = std::env::var(ENV_TIMEOUT_SECS) {
+        match value.parse() {
             Ok(value) => {
-                tracing::info!("server internal process timeout in seconds: {}", value);
+                tracing::info!("Server internal process timeout in seconds: {}.", value);
                 value
             }
             Err(err) => {
-                tracing::error!("failed to parse ENV_TIMEOUT_SECS to f32");
+                tracing::error!("Failed to parse ENV_TIMEOUT_SECS to f32.");
                 panic!("{}", err);
             }
-        },
-        Err(_) => {
-            let value = 0.5;
-            tracing::info!(
-                "{} hasn't been set (default value: {})",
-                ENV_TIMEOUT_SECS,
-                value
-            );
-            value
         }
+    } else {
+        let value = 0.5;
+        tracing::info!(
+            "{} hasn't been set (default value: {}).",
+            ENV_TIMEOUT_SECS,
+            value
+        );
+        value
     }
 }

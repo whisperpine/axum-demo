@@ -8,10 +8,10 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     /// Error raised by mongodb crate.
-    #[error("Mongodb: {0}")]
+    #[error("mongodb: {0}")]
     Mongodb(#[from] mongodb::error::Error),
     /// Execution timeout.
-    #[error("Timeout: {0}")]
+    #[error("timeout: {0}")]
     Timeout(String),
 }
 

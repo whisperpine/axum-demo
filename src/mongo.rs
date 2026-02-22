@@ -1,7 +1,7 @@
 use crate::{Error, Result};
 use axum::extract::Form;
 use axum::response::Json;
-use mongodb::{bson::Document, options::ClientOptions, Client};
+use mongodb::{Client, bson::Document, options::ClientOptions};
 use serde::{Deserialize, Serialize};
 use std::sync::LazyLock;
 use uuid::Uuid;
@@ -12,29 +12,27 @@ const ENV_MONGODB_URI: &str = "MONGODB_URI";
 const ENV_DB_NAME: &str = "DB_NAME";
 
 /// Target database name.
-static DB_NAME: LazyLock<String> = LazyLock::new(|| match std::env::var(ENV_DB_NAME) {
-    Ok(value) => {
+static DB_NAME: LazyLock<String> = LazyLock::new(|| {
+    if let Ok(value) = std::env::var(ENV_DB_NAME) {
         tracing::info!("{}={}", ENV_DB_NAME, value);
         value
-    }
-    Err(_) => {
+    } else {
         let default_db_name = "axum-demo";
-        tracing::warn!("{} env var hasn't been set", ENV_DB_NAME);
-        tracing::warn!("Using default value: {}", default_db_name);
+        tracing::warn!("{} env var hasn't been set.", ENV_DB_NAME);
+        tracing::warn!("Using default value: {}.", default_db_name);
         default_db_name.to_owned()
     }
 });
 
-/// MongoDB connection string.
-static MONGODB_URI: LazyLock<String> = LazyLock::new(|| match std::env::var(ENV_MONGODB_URI) {
-    Ok(value) => {
+/// `MongoDB` connection string.
+static MONGODB_URI: LazyLock<String> = LazyLock::new(|| {
+    if let Ok(value) = std::env::var(ENV_MONGODB_URI) {
         tracing::info!("{}={}", ENV_MONGODB_URI, value);
         value
-    }
-    Err(_) => {
+    } else {
         let default_uri = "mongodb://localhost:27017";
-        tracing::warn!("{} env var hasn't been set", ENV_MONGODB_URI);
-        tracing::warn!("Using default value: {}", default_uri);
+        tracing::warn!("{} env var hasn't been set.", ENV_MONGODB_URI);
+        tracing::warn!("Using default value: {}.", default_uri);
         default_uri.to_owned()
     }
 });
@@ -46,6 +44,10 @@ pub struct UserInfo {
 }
 
 /// Read all user info and response.
+///
+/// # Errors
+///
+/// Returns Err when failed connecting to mongo or finding documents.
 pub async fn log_registered_users() -> Result<Json<Vec<String>>> {
     let user_infos: Vec<UserInfo> = read_all().await?;
     let mut texts: Vec<String> = vec![];
@@ -69,32 +71,40 @@ async fn connect() -> Result<Client> {
     let client = Client::with_options(client_options)?;
     // List the names of the databases in that deployment.
     // And check if the connection to mongodb could be established.
-    let databases = match timeout(
+    let databases = if let Ok(inner) = timeout(
         Duration::from_secs_f32(CONNECTION_TIMEOUT_SECS),
         client.list_database_names(),
     )
     .await
     {
-        Ok(inner) => inner?,
-        Err(_) => {
-            let error_message =
-                format!("failed to connect to mongodb within {CONNECTION_TIMEOUT_SECS}s");
-            tracing::error!(error_message);
-            return Err(Error::Timeout(error_message));
-        }
+        inner?
+    } else {
+        let error_message =
+            format!("Failed to connect to mongodb within {CONNECTION_TIMEOUT_SECS}s.");
+        tracing::error!(error_message);
+        return Err(Error::Timeout(error_message));
     };
     tracing::debug!(?databases);
     Ok(client)
 }
 
 /// List all collections in determined database.
+///
 /// # Example
+///
 /// ```
 /// # async fn demo() {
 /// // "admin" is one of the default database in mongodb
 /// axum_demo::list_collections("admin").await.unwrap();
 /// # }
 /// ```
+///
+/// # Errors
+///
+/// Returns Err if any of the following happens:
+///
+/// - fails to connect to `MongoDB`.
+/// - fails to get the names of the collections in the database.
 pub async fn list_collections(db_name: &str) -> Result<()> {
     let db = connect().await?.database(db_name);
     for collection_name in db.list_collection_names().await? {
@@ -135,6 +145,13 @@ pub struct CreateUser {
 }
 
 /// Add [`UserInfo`] to database and response in json format.
+///
+/// # Errors
+///
+/// Returns Err if any of the following happens:
+///
+/// - fails to connect to `MongoDB`.
+/// - fails to insert the user document into the corresponding collection.
 pub async fn register_user(Form(value): Form<CreateUser>) -> Result<Json<UserInfo>> {
     let user_info = UserInfo {
         username: value.username,

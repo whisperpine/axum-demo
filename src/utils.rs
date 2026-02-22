@@ -19,21 +19,25 @@ pub async fn handler_404() -> impl IntoResponse {
     (StatusCode::NOT_FOUND, "404 not found")
 }
 
-/// Graceful shutdown
+/// Graceful shutdown.
 ///
 /// Shutdown the server when pressing `Ctrl+C`.
+///
+/// # Panics
+///
+/// Panics if fails to install signal handler.
 pub async fn shutdown() {
     use tokio::signal;
     let ctrl_c = async {
         signal::ctrl_c()
             .await
-            .expect("failed to install Ctrl+C handler");
+            .expect("Failed to install Ctrl+C handler.");
     };
 
     #[cfg(unix)]
     let terminate = async {
         signal::unix::signal(signal::unix::SignalKind::terminate())
-            .expect("failed to install signal handler")
+            .expect("Failed to install signal handler.")
             .recv()
             .await;
     };
@@ -42,9 +46,9 @@ pub async fn shutdown() {
     let terminate = std::future::pending::<()>();
 
     tokio::select! {
-        _ = ctrl_c => {},
-        _ = terminate => {},
+        () = ctrl_c => {},
+        () = terminate => {},
     }
 
-    tracing::info!("starting graceful shutdown");
+    tracing::info!("Starting graceful shutdown.");
 }

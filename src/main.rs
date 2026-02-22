@@ -17,10 +17,10 @@ async fn main() -> anyhow::Result<()> {
     init_tracing_subscriber();
     print_libc_linkage();
 
-    tracing::info!("app version: {}", axum_demo::PKG_VERSION);
+    tracing::info!("App version: {}.", axum_demo::PKG_VERSION);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
-    tracing::info!("listening at http://localhost:{}", addr.port());
+    tracing::info!("Listening at http://localhost:{}.", addr.port());
 
     let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app()).await?;
@@ -43,17 +43,20 @@ fn init_tracing_subscriber() {
 
 #[cfg(target_feature = "crt-static")]
 fn print_libc_linkage() {
-    tracing::info!("the C runtime is linked statically");
+    tracing::info!("The C runtime is linked statically.");
 }
 #[cfg(not(target_feature = "crt-static"))]
 fn print_libc_linkage() {
-    tracing::info!("the C runtime is linked dynamically");
+    tracing::info!("The C runtime is linked dynamically.");
 }
 
 fn app() -> axum::Router {
     use axum::error_handling::HandleErrorLayer;
     use axum::routing::get;
-    use axum_demo::*;
+    use axum_demo::{
+        TIMEOUT_SECS, buffer_error_handler, handler_404, handler_root, log_form, log_path,
+        log_registered_users, register_user, show_form, timeout_error_handler,
+    };
     use std::time::Duration;
     use tower::ServiceBuilder;
 

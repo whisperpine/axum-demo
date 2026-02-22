@@ -15,7 +15,7 @@ mod config;
 mod error;
 /// Handle [`axum::extract::Form`] request.
 mod form;
-/// MongoDB.
+/// `MongoDB`.
 mod mongo;
 /// Convert [`tower::Service`] inner error [`IntoResponse`].
 mod service;
