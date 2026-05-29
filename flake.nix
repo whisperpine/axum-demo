@@ -19,7 +19,6 @@
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
-        "x86_64-darwin"
         "aarch64-darwin"
       ];
       forEachSupportedSystem =
@@ -47,7 +46,7 @@
           #   extensions = [ "rust-src" ];
           #   targets = [ ];
           # };
-          rust.nightly."2026-02-15".default.override {
+          rust.nightly."2026-05-28".default.override {
             extensions = [ "rust-src" ];
             targets = [ ];
           };
